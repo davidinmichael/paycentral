@@ -3,5 +3,5 @@ from .views import *
 
 urlpatterns = [
     path("payment_methods/", PaymentOptions.as_view()),
-    path("countries/", AllCountries.as_view()),
+    path("all_countries/", AllCountries.as_view()),
 ]
