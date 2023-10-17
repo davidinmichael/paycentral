@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
 from .models import *
 from .serializers import *
 from bs4 import BeautifulSoup
@@ -8,17 +9,31 @@ import lxml
 import requests
 
 
-class PaymentOptions(APIView):
+class PaymentOptions(APIView, PageNumberPagination):
+    
     def get(self, request):
         payment_options = PaymentOption.objects.all()
-        serializer = PaymentOptionSerializers(payment_options, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        response = self.paginate_queryset(payment_options, request, view=self)
+        serializer = PaymentOptionSerializers(response, many=True)
+        if payment_options:
+            # return Response(serializer.data, status=status.HTTP_200_OK)
+            return self.get_paginated_response(serializer.data)
+        else:
+            message = "No payment options available now, check back soon"
+            return Response({'message': message}, status=status.HTTP_404_NOT_FOUND)
 
-class AllCountries(APIView):
-    def get(self, request):
-        countries = CountryWiki.objects.all()
-        serializer = CountrySerializer(countries, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+# class AddPaymentOptions(APIView):
+#     def post(self, request):
+#         payment_options = PaymentOption.objects.values("payment_option")
+#         serializer = PaymentOptionSerializers(request.data)
+#         if serializer.is_valid():
+
+
+# class AllCountries(APIView):
+#     def get(self, request):
+#         countries = CountryWiki.objects.all()
+#         serializer = CountrySerializer(countries, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
 
 # class PaymentOptions(APIView):
 #     def get(self, request):
@@ -58,8 +73,6 @@ class AllCountries(APIView):
 #             else:
 #                 # Handle cases where the payment_data doesn't have enough elements
 #                 print("Incomplete data:", payment_data)
-
-# # Rest of your code remains unchanged
 
 
 #         # Iterate through the scraped data

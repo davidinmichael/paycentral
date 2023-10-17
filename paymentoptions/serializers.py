@@ -2,10 +2,10 @@ from rest_framework import serializers
 from .models import *
 
 class PaymentOptionSerializers(serializers.ModelSerializer):
-    country_names = serializers.StringRelatedField(many=True, source="country")
+    supported_countries = serializers.StringRelatedField(many=True, source="country")
     class Meta:
         model = PaymentOption
-        fields = ['payment_option', 'country_names']
+        fields = ['payment_option', 'supported_countries']
 
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,6 +1,8 @@
+from urllib import response
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
 from .models import *
 from .serializers import *
 from bs4 import BeautifulSoup
@@ -8,7 +10,7 @@ import lxml
 import requests
 
 
-class Countries(APIView):
+class Countries(APIView, PageNumberPagination):
     def get(self, request):
         # region_name_new = Region.objects.create(name="Others")
         # url = "https://restcountries.com/v3.1/all"
@@ -44,8 +46,10 @@ class Countries(APIView):
         #     print("An error occurred:", e)
 
         countries = Country.objects.all().order_by("name")
-        serializer = CountrySerializer(countries, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        response = self.paginate_queryset(countries, request, view=self)
+        serializer = CountrySerializer(response, many=True)
+        # return Response(serializer.data, status=status.HTTP_200_OK)
+        return self.get_paginated_response(serializer.data)
 
 
 
