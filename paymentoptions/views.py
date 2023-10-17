@@ -16,7 +16,7 @@ class PaymentOptions(APIView):
 
 class AllCountries(APIView):
     def get(self, request):
-        countries = Country.objects.all()
+        countries = CountryWiki.objects.all()
         serializer = CountrySerializer(countries, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

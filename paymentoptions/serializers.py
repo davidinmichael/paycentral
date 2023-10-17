@@ -9,5 +9,5 @@ class PaymentOptionSerializers(serializers.ModelSerializer):
 
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Country
+        model = CountryWiki
         fields = ["name"]
