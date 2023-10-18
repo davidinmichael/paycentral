@@ -22,18 +22,18 @@ class PaymentOptions(APIView, PageNumberPagination):
             message = "No payment options available now, check back soon"
             return Response({'message': message}, status=status.HTTP_404_NOT_FOUND)
 
-# class AddPaymentOptions(APIView):
-#     def post(self, request):
-#         payment_options = PaymentOption.objects.values("payment_option")
-#         serializer = PaymentOptionSerializers(request.data)
-#         if serializer.is_valid():
+class AddPaymentOptions(APIView):
+    def post(self, request):
+        print(request.data)  # Print the data received in the request
+        serializer = AddPaymentOptionSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print(serializer.errors)  # Print any serializer errors
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# class AllCountries(APIView):
-#     def get(self, request):
-#         countries = CountryWiki.objects.all()
-#         serializer = CountrySerializer(countries, many=True)
-#         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 # class PaymentOptions(APIView):
 #     def get(self, request):

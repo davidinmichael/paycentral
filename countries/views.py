@@ -3,6 +3,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
+
+from paymentoptions.models import PaymentOption
+from paymentoptions.serializers import CountryPaymentOptionSerializer
 from .models import *
 from .serializers import *
 from bs4 import BeautifulSoup
@@ -28,10 +31,10 @@ class Countries(APIView, PageNumberPagination):
 
         #             region_name = country_data.get("region", "N/A")
         #             if region_name:
-                        # region, _ = Region.objects.get_or_create(name=region_name)
+                        # region_, _ = Region.objects.get_or_create(name=region_name)
         #             else:
         #                 # If region is not found, associate with the "Others" region
-        #                 region = Region.objects.get(name="Others")
+                        # region_ = Region.objects.get(name="Others")
 
         #             # Create a new Country instance and save it to the database
         #             country, created = Country.objects.get_or_create(name=country_name, capital=capital, region=region)
@@ -52,6 +55,13 @@ class Countries(APIView, PageNumberPagination):
         return self.get_paginated_response(serializer.data)
 
 
+class CountryAndPaymentMethods(APIView, PageNumberPagination):
+    def get(self, request):
+        payment_options = PaymentOption.objects.all().order_by("payment_option")
+        response = self.paginate_queryset(payment_options, request, view=self)
+        serializer = CountryPaymentOptionSerializer(response, many=True)
+        # return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
 
 class AllRegion(APIView):
     def get(self, request):

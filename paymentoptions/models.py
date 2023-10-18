@@ -14,3 +14,4 @@ class PaymentOption(models.Model):
 
     def __str__(self):
         return self.payment_option
+    
