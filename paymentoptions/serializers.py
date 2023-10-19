@@ -8,7 +8,7 @@ class PaymentOptionSerializer(serializers.ModelSerializer):
         model = PaymentOption
         fields = ["payment_option"]
 
-class PaymentOptionSerializers(serializers.ModelSerializer):
+class PaymentOptionCountrySerializer(serializers.ModelSerializer):
     supported_countries = serializers.StringRelatedField(many=True, source="country")
     class Meta:
         model = PaymentOption

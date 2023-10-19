@@ -1,3 +1,4 @@
+from re import A
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,12 +14,19 @@ class PaymentOptions(APIView, PageNumberPagination):
     def get(self, request):
         payment_options = PaymentOption.objects.all()
         response = self.paginate_queryset(payment_options, request, view=self)
-        serializer = PaymentOptionSerializers(response, many=True)
+        serializer = PaymentOptionSerializer(response, many=True)
         if payment_options:
             return self.get_paginated_response(serializer.data)
         else:
             message = "No payment options available now, check back soon"
             return Response({'message': message}, status=status.HTTP_404_NOT_FOUND)
+
+
+class AvailablePaymentOptionAndCountries(APIView):
+    def get(self, request):
+        payment_options = PaymentOption.objects.all().order_by("payment_option")
+        serializer = PaymentOptionCountrySerializer(payment_options, many=True)
+        return Response(serializer.data, status.HTTP_200_OK)
 
 
 class AddPaymentOptions(APIView):

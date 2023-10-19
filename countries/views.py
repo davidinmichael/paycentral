@@ -25,12 +25,12 @@ class AllRegion(APIView):
         regions = Region.objects.all().order_by("name")
         serializer = RegionSerializer(regions, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
-    
 
-class CountryAndPaymentMethods(APIView, PageNumberPagination):
+
+class CountriesAndPaymentMethods(APIView, PageNumberPagination):
     def get(self, request):
-        payment_options = Country.objects.all().order_by("name")
-        response = self.paginate_queryset(payment_options, request, view=self)
+        countries = Country.objects.all().order_by("name")
+        response = self.paginate_queryset(countries, request, view=self)
         serializer = SingleCountrySerializer(response, many=True)
         return self.get_paginated_response(serializer.data)
 
