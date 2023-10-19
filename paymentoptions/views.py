@@ -1,4 +1,3 @@
-from re import A
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -28,6 +27,16 @@ class AvailablePaymentOptionAndCountries(APIView):
         serializer = PaymentOptionCountrySerializer(payment_options, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
+
+class SinglePaymentAndCountries(APIView):
+    def get(self, request, pk):
+        try:
+            payment_option = PaymentOption.objects.get(id=pk)
+        except PaymentOption.DoesNotExist:
+            return Response({"message": "Oops, Requested Payment Option Does Not Exist"})
+        serializer = PaymentOptionCountrySerializer(payment_option)
+        return Response(serializer.data, status.HTTP_200_OK)
+    
 
 class AddPaymentOptions(APIView):
     def post(self, request):
