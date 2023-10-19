@@ -25,6 +25,19 @@ class AllRegion(APIView):
         regions = Region.objects.all().order_by("name")
         serializer = RegionSerializer(regions, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
+    
+
+class SingleRegion(APIView):
+    def get(self, request, pk):
+        try:
+            region = Region.objects.get(id=pk)
+        except Region.DoesNotExist:
+            return Response({"message": "Oops, no available region"})
+        countries = Country.objects.filter(region=region).order_by("name")
+        serializer = CountrySerializer(countries, many=True)
+        if not countries:
+            return Response({"message": "No country found for this region"}, status.HTTP_404_NOT_FOUND)
+        return Response(serializer.data, status.HTTP_200_OK)
 
 
 class CountriesAndPaymentMethods(APIView, PageNumberPagination):
