@@ -11,3 +11,5 @@ class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
         fields = ["name", "capital", "region"]
+
+

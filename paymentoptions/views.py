@@ -10,17 +10,16 @@ import requests
 
 
 class PaymentOptions(APIView, PageNumberPagination):
-    
     def get(self, request):
         payment_options = PaymentOption.objects.all()
         response = self.paginate_queryset(payment_options, request, view=self)
         serializer = PaymentOptionSerializers(response, many=True)
         if payment_options:
-            # return Response(serializer.data, status=status.HTTP_200_OK)
             return self.get_paginated_response(serializer.data)
         else:
             message = "No payment options available now, check back soon"
             return Response({'message': message}, status=status.HTTP_404_NOT_FOUND)
+
 
 class AddPaymentOptions(APIView):
     def post(self, request):
@@ -34,7 +33,7 @@ class AddPaymentOptions(APIView):
 
 
 
-
+# Getting payment data
 # class PaymentOptions(APIView):
 #     def get(self, request):
 #         url = "https://en.wikipedia.org/wiki/List_of_online_payment_service_providers"
