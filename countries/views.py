@@ -66,7 +66,10 @@ class SingleCountryAndPayment(APIView):
 
 class SearchCountry(APIView, PageNumberPagination):
     def get(self, request, name):
-        countries = Country.objects.filter(name__icontains=name).order_by('name')
+        try:
+            countries = Country.objects.filter(name__icontains=name).order_by('name')
+        except Country.DoesNotExist:
+            return Response({"message": "Oops, country not found, check the spelling and try again."})
         response = self.paginate_queryset(countries, request, view=self)
         serializer = SingleCountrySerializer(response, many=True)
         return self.get_paginated_response(serializer.data)
