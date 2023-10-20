@@ -17,23 +17,11 @@ class PaymentOptionCountrySerializer(serializers.ModelSerializer):
 
 class AddPaymentOptionSerializer(serializers.ModelSerializer):
     payment_option = serializers.CharField(max_length=255)
-    country = serializers.ListField(child=serializers.CharField(max_length=100))
+    country = serializers.SlugRelatedField(queryset=Country.objects.all(), slug_field="name")
 
     class Meta:
         model = PaymentOption
         fields = ['payment_option', 'country']
-
-    def create(self, validated_data):
-        supported_country_names = validated_data.pop('country', [])
-        print(type(supported_country_names))
-
-        payment_option = PaymentOption.objects.create(payment_option=validated_data['payment_option'])
-
-        for country_name in supported_country_names:
-            country = Country.objects.get(name=country_name)
-            payment_option.country.add(country)
-
-        return payment_option
 
 
 class SingleCountrySerializer(serializers.ModelSerializer):
@@ -42,3 +30,34 @@ class SingleCountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
         fields = ["name", "capital", "region", "payment_options"]
+
+
+# class AddPaymentOptionSerializer(serializers.ModelSerializer):
+#     payment_option = serializers.CharField(max_length=255)
+#     country = serializers.ListField(child=serializers.CharField(max_length=100))
+
+#     class Meta:
+#         model = PaymentOption
+#         fields = ['payment_option', 'country']
+
+#     def create(self, validated_data):
+#         supported_country_names = validated_data.pop('country', [])
+#         print(type(supported_country_names))
+
+#         payment_option = PaymentOption.objects.create(payment_option=validated_data['payment_option'])
+
+#         for country_name in supported_country_names:
+#             country = Country.objects.get(name=country_name)
+#             payment_option.country.add(country)
+
+#         return payment_option
+
+
+# {
+#     "payment_option": "PayPoint",
+#     "country": [
+#         "United Kingdom",
+#         "Romania",
+#         "Republic of Ireland"
+#         ]
+# }
