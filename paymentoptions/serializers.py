@@ -17,7 +17,7 @@ class PaymentOptionCountrySerializer(serializers.ModelSerializer):
 
 class AddPaymentOptionSerializer(serializers.ModelSerializer):
     payment_option = serializers.CharField(max_length=255)
-    country = serializers.SlugRelatedField(queryset=Country.objects.all(), slug_field="name")
+    country = serializers.SlugRelatedField(queryset=Country.objects.all(), slug_field="country")
 
     class Meta:
         model = PaymentOption
@@ -54,10 +54,9 @@ class SingleCountrySerializer(serializers.ModelSerializer):
 
 
 # {
-#     "payment_option": "PayPoint",
+#     "payment_option": "Xsolla",
 #     "country": [
-#         "United Kingdom",
-#         "Romania",
-#         "Republic of Ireland"
+#         "United States",
+#         "Russia",
 #         ]
 # }
