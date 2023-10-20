@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from paymentoptions.models import PaymentOption
+from django.db.models import Q
 from paymentoptions.serializers import *
 from .models import *
 from .serializers import *
@@ -66,7 +67,9 @@ class SingleCountryAndPayment(APIView):
 
 class SearchCountry(APIView, PageNumberPagination):
     def get(self, request, name):
-        countries = Country.objects.filter(name__icontains=name).order_by('name')
+        countries = Country.objects.filter(
+            Q(name__icontains=name) | Q(region__icontains=name) | Q(capital__icontains=name)
+    ).order_by('name')
         if not countries:
             return Response({"message": "Oops, country not found, check the spelling and try again."})
         response = self.paginate_queryset(countries, request, view=self)
