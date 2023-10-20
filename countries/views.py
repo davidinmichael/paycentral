@@ -68,7 +68,7 @@ class SingleCountryAndPayment(APIView):
 class SearchCountry(APIView, PageNumberPagination):
     def get(self, request, name):
         countries = Country.objects.filter(
-            Q(name__icontains=name) | Q(region__icontains=name) | Q(capital__icontains=name)
+            Q(name__icontains=name) | Q(region__name__icontains=name) | Q(capital__icontains=name)
     ).order_by('name')
         if not countries:
             return Response({"message": "Oops, country not found, check the spelling and try again."})
