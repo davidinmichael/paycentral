@@ -64,6 +64,13 @@ class SingleCountryAndPayment(APIView):
             return Response(data, status.HTTP_200_OK)
 
 
+class SearchCountry(APIView, PageNumberPagination):
+    def get(self, request, name):
+        countries = Country.objects.filter(name__icontains=name).order_by('name')
+        response = self.paginate_queryset(countries, request, view=self)
+        serializer = SingleCountrySerializer(response, many=True)
+        return self.get_paginated_response(serializer.data)
+
     
 
 # Getting all countries and regions
