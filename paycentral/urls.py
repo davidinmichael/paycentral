@@ -16,6 +16,7 @@ urlpatterns = [
             "schema_url": "api_schema"
         })),
 
+    path("account/", include("account.urls")),
     path("", include("paymentoptions.urls")),
     path("", include("countries.urls")),
 ]

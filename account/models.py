@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from countries.models import Country
+import uuid
 
 # Create your models here.
 ACCOUNT_TYPE = [
@@ -58,6 +59,8 @@ class AppUser(AbstractUser):
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     industry = models.ForeignKey(Industry, on_delete=models.CASCADE)
     agree = models.BooleanField()
+    email_verified = models.BooleanField(default=False)
+    token_otp = models.PositiveIntegerField(null=True, blank=True, unique=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["password", "agree"]
@@ -66,3 +69,8 @@ class AppUser(AbstractUser):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} | {self.account_type} Account"
+    
+    def save(self, *args, **kwargs):
+        if not self.token_otp:
+            self.token_otp = str(uuid.uuid4()).replace('-', "").upper()[:6]
+        return super().save(*args, **kwargs)
