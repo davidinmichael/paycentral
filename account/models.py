@@ -52,6 +52,7 @@ class AppUser(AbstractUser):
     email = models.EmailField(unique=True)
     username = models.CharField(
         max_length=50, unique=False, null=True, blank=True)
+    # password = models.CharField(max_length=50, null=True, blank=True)
     account_type = models.CharField(max_length=50, choices=ACCOUNT_TYPE)
     job_status = models.CharField(max_length=50, choices=JOB_STATUS)
     employment_type = models.CharField(max_length=50, choices=EMPLOYMENT_TYPE)
@@ -60,7 +61,7 @@ class AppUser(AbstractUser):
     industry = models.ForeignKey(Industry, on_delete=models.CASCADE)
     agree = models.BooleanField()
     email_verified = models.BooleanField(default=False)
-    token_otp = models.PositiveIntegerField(null=True, blank=True, unique=True)
+    token_otp = models.CharField(max_length=10, null=True, blank=True, unique=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["password", "agree"]
@@ -74,3 +75,17 @@ class AppUser(AbstractUser):
         if not self.token_otp:
             self.token_otp = str(uuid.uuid4()).replace('-', "").upper()[:6]
         return super().save(*args, **kwargs)
+
+# payload = {
+#     "account_type": "Business",
+#     "job_status": "Employed",
+#     "employment_type": "Self-employed",
+#     "job_role": "Backend Developer",
+#     "country": "Nigeria",
+#     "industry": "Engineering",
+#     "first_name": "Michael",
+#     "last_name": "Inyene",
+#     "email": "davidmizzy731@gmail.com",
+#     "password": "Michael@1986",
+#     "agree": "true"
+# }
