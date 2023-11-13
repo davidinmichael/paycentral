@@ -52,7 +52,6 @@ class AppUser(AbstractUser):
     email = models.EmailField(unique=True)
     username = models.CharField(
         max_length=50, unique=False, null=True, blank=True)
-    # password = models.CharField(max_length=50, null=True, blank=True)
     account_type = models.CharField(max_length=50, choices=ACCOUNT_TYPE)
     job_status = models.CharField(max_length=50, choices=JOB_STATUS)
     employment_type = models.CharField(max_length=50, choices=EMPLOYMENT_TYPE)

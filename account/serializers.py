@@ -22,35 +22,23 @@ class RegisterSerializer(serializers.ModelSerializer):
             'password': {'write_only': True},
         }
 
-    # def validate_password(self, value):
-    #     if len(value) < 8:
-    #         raise ValidationError(
-    #             "Password must be at least 8 characters long")
-    #     if not any(char.isupper() for char in value):
-    #         raise ValidationError(
-    #             "Password must contain at least one uppercase letter")
-    #     if not re.search(r'[!@#$%^&*(),.?":{}|<>]', value):
-    #         raise ValidationError(
-    #             "Password must contain at least one special character")
-
+    def validate_password(self, value):
+        if len(value) < 8:
+            raise ValidationError(
+                "Password must be at least 8 characters long")
+        if not any(char.isupper() for char in value):
+            raise ValidationError(
+                "Password must contain at least one uppercase letter")
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', value):
+            raise ValidationError(
+                "Password must contain at least one special character")
+        return value
 
     def create(self, validated_data):
         password = validated_data.pop('password', None)
-        print("Password after pop", password)
         user = self.Meta.model(**validated_data)
 
         if password:
             user.set_password(password)
-            print("Password after set", password)
         user.save()
         return user
-
-
-    # def create(self, validated_data):
-    #     password = validated_data.pop('password', None)
-    #     user = AppUser.objects.create(password=password, **validated_data)
-        # user = super().create(validated_data)
-        # if password:
-        #     user.set_password(password)
-        #     user.save()
-        # return user
