@@ -8,7 +8,6 @@ from countries.models import Country
 class RegisterSerializer(serializers.ModelSerializer):
     industry = serializers.SlugRelatedField(
         slug_field="name", queryset=Industry.objects.all())
-    # country = serializers.CharField(source='country.name')
     country = serializers.SlugRelatedField(
         slug_field="name", queryset=Country.objects.all())
 

@@ -14,6 +14,7 @@ class RegisterUsers(APIView):
             user = serializer.save()
         else:
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+        data["message"] = f"We have sent a verification email to {user.email}"
         data["first_name"] = user.first_name
         data["last_name"] = user.last_name
         data["email"] = user.email
