@@ -7,7 +7,6 @@ from .models import *
 from .utils import *
 
 
-
 # Create your views here.
 class RegisterUsers(APIView):
     def post(self, request):
@@ -28,18 +27,19 @@ class RegisterUsers(APIView):
         data["job_role"] = user.job_role
         data["industry"] = user.industry.name
         return Response(data, status.HTTP_201_CREATED)
-    
+
 
 class ResendVerificationMail(APIView):
     def get(self, request, user_email):
         user = AppUser.objects.get(email=user_email)
         if user.email_verified == False:
             context = {
-            "name": user.first_name,
-            "email": user.email,
-            "token": user.token_otp,
-        }
+                "name": user.first_name,
+                "email": user.email,
+                "token": user.token_otp,
+            }
             template = render_to_string("account/welcome_email.html", context)
+            print(template)
             try:
                 send_email(user.email, template)
                 return Response({"message": "Email Sent"}, status.HTTP_200_OK)

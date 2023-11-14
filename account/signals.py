@@ -21,6 +21,7 @@ def send_welcome_email(sender, instance, created, **kwargs):
         "token": instance.token_otp,
     }
     template = render_to_string("account/welcome_email.html", context)
+    print(template)
     if created:
         try:
             send_email(instance.email, template)
