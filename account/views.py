@@ -4,6 +4,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import *
 from .models import *
+from .utils import *
+
+
 
 # Create your views here.
 class RegisterUsers(APIView):
@@ -27,3 +30,18 @@ class RegisterUsers(APIView):
         return Response(data, status.HTTP_201_CREATED)
     
 
+class ResendVerificationMail(APIView):
+    def get(self, request, user_email):
+        user = AppUser.objects.get(email=user_email)
+        if user.email_verified == False:
+            context = {
+            "name": user.first_name,
+            "email": user.email,
+            "token": user.token_otp,
+        }
+            template = render_to_string("account/welcome_email.html", context)
+            try:
+                send_email(user.email, template)
+                return Response({"message": "Email Sent"}, status.HTTP_200_OK)
+            except:
+                return Response({"message": "Try Again"}, status.HTTP_200_OK)
