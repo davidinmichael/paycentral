@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -45,3 +45,15 @@ class ResendVerificationMail(APIView):
                 return Response({"message": "Email Sent"}, status.HTTP_200_OK)
             except:
                 return Response({"message": "Try Again"}, status.HTTP_200_OK)
+
+
+class VerifyEmail(APIView):
+    def get(self, request, token):
+        url = "https://github.com/davidinmichael/paycentral"
+        user = AppUser.objects.get(token_otp=token)
+        if user.email == False:
+            user.email_verified = True
+            user.save()
+            return redirect(url)
+        else:
+            return redirect("https://github.com/davidinmichael/articleapp")
