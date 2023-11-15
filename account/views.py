@@ -51,7 +51,7 @@ class VerifyEmail(APIView):
     def get(self, request, token):
         url = "https://github.com/davidinmichael/paycentral"
         user = AppUser.objects.get(token_otp=token)
-        if user.email == False:
+        if user.email_verified == False:
             user.email_verified = True
             user.save()
             return redirect(url)
