@@ -2,6 +2,7 @@ from django.shortcuts import redirect
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import *
 from .models import *
@@ -10,6 +11,8 @@ from .utils import *
 
 # Create your views here.
 class RegisterUsers(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         data = {}
         serializer = RegisterSerializer(data=request.data)
@@ -36,6 +39,8 @@ class RegisterUsers(APIView):
 
 
 class ResendVerificationMail(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request, user_email):
         user = AppUser.objects.get(email=user_email)
         if user.email_verified == False:
@@ -54,6 +59,8 @@ class ResendVerificationMail(APIView):
 
 
 class VerifyEmail(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request, token):
         url = "https://github.com/davidinmichael/paycentral"
         user = AppUser.objects.get(token_otp=token)
@@ -64,7 +71,10 @@ class VerifyEmail(APIView):
         else:
             return redirect("https://github.com/davidinmichael/articleapp")
 
+
 class LoginUser(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         data = {}
 
@@ -75,7 +85,7 @@ class LoginUser(APIView):
             user = AppUser.objects.get(email=email)
         except AppUser.DoesNotExist:
             return Response({"message": "User with that email does not exist"}, status.HTTP_404_NOT_FOUND)
-        
+
         if user.check_password(password):
             refresh = RefreshToken.for_user(user)
             data["message"] = f"Welcome back {user.first_name}, you have been logged in"
@@ -95,4 +105,3 @@ class LoginUser(APIView):
             return Response(data, status.HTTP_200_OK)
         else:
             return Response({"message": "Incorrect password entered"})
-        
