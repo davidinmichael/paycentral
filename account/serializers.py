@@ -1,3 +1,4 @@
+from tkinter.ttk import Style
 from rest_framework import serializers
 from django.core.exceptions import ValidationError
 import re
@@ -41,3 +42,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             user.set_password(password)
         user.save()
         return user
+
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(style={"input_type": "password"})
