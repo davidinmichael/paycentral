@@ -111,5 +111,14 @@ class LoginUser(APIView):
 class LogoutUser(APIView):
 
     def post(self, request):
-        request.user.auth_token.delete()
-        return Response({"message": "You have been logged out, login to continue"})
+        refresh_token = request.data.get('refresh_token')
+
+        if not refresh_token:
+            return Response({'error': 'Refresh token is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({'message': 'Logout successful, login to continue.'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': f'Error logging out: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

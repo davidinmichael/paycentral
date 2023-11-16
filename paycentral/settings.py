@@ -28,7 +28,7 @@ load_dotenv()
 SECRET_KEY = 'django-insecure-$c)0&**!vgf&o+!hxj976v8=z*#t@vkf1-0i-cbwq)ks0(+vzf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_swagger",
     'rest_framework_simplejwt',
+    "rest_framework_simplejwt.token_blacklist",
     "paymentoptions",
     "countries",
     "account",
