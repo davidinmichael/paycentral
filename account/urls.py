@@ -12,4 +12,5 @@ urlpatterns = [
     path("resend_email/<str:user_email>/", ResendVerificationMail.as_view()),
     path("verify/<str:token>/", VerifyEmail.as_view()),
     path("login/", LoginUser.as_view()),
+    path("logout/", LogoutUser.as_view()),
 ]

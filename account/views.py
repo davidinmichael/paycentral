@@ -105,3 +105,11 @@ class LoginUser(APIView):
             return Response(data, status.HTTP_200_OK)
         else:
             return Response({"message": "Incorrect password entered"})
+
+
+
+class LogoutUser(APIView):
+
+    def post(self, request):
+        request.user.auth_token.delete()
+        return Response({"message": "You have been logged out, login to continue"})
