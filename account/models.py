@@ -54,7 +54,7 @@ class AppUser(AbstractUser):
         max_length=50, unique=False, null=True, blank=True)
     account_type = models.CharField(max_length=50, choices=ACCOUNT_TYPE)
     job_status = models.CharField(max_length=50, choices=JOB_STATUS)
-    employment_type = models.CharField(max_length=50, choices=EMPLOYMENT_TYPE)
+    employment_type = models.CharField(max_length=50, choices=EMPLOYMENT_TYPE, null=True, blank=True)
     job_role = models.CharField(max_length=50)
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     industry = models.ForeignKey(Industry, on_delete=models.CASCADE)
