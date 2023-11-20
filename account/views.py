@@ -2,8 +2,10 @@ from django.shortcuts import redirect
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.template.loader import render_to_string
+from .utils import *
 from .serializers import *
 from .models import *
 from .utils import *
@@ -16,6 +18,7 @@ class AllIndustries(APIView):
         industry = Industry.objects.all()
         serializer = IndustrySerializer(industry, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
+
 
 class RegisterUsers(APIView):
     permission_classes = [AllowAny]
@@ -114,7 +117,6 @@ class LoginUser(APIView):
             return Response({"message": "Incorrect password entered"})
 
 
-
 class LogoutUser(APIView):
 
     def post(self, request):
@@ -129,3 +131,60 @@ class LogoutUser(APIView):
             return Response({'message': 'Logout successful, login to continue.'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': f'Error logging out: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ForgotPassword(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get("email")
+        try:
+            user = AppUser.objects.get(email=email)
+            print(user.id)
+        except AppUser.DoesNotExist:
+            return Response({"message": "User with that email does not exist"},
+                            status.HTTP_404_NOT_FOUND)
+        context = {
+            "id": user.id,
+            "name": user.first_name,
+        }
+        template = render_to_string("account/forgot_email.html", context)
+        try:
+            send_email(user.email, template)
+        except:
+            return Response({"message": "Error sending mail"}, status.HTTP_400_BAD_REQUEST)
+        return Response({"message": f"We have sent an email with a password reset information to {user.email}"}, status.HTTP_200_OK)
+
+
+class VerifyPasswordLink(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, id):
+        # url = f"https://github.com/davidinmichael/paycentral/?user_id={id}"
+        url = "https://github.com/davidinmichael/paycentral"
+        try:
+            user = AppUser.objects.get(id=id)
+        except AppUser.DoesNotExist:
+            return Response({"message": "User does not exist"})
+        return redirect(url)
+        
+
+
+class ChangePassword(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        user_id = request.data.get("user_id")
+        password = request.data.get("password")
+        confirm_password = request.data.get("confirm_password")
+
+        try:
+            user = AppUser.objects.get(id=user_id)
+        except AppUser.DoesNotExist:
+            return Response({"message": "Invalid URL for password reset"}, status.HTTP_404_NOT_FOUND)
+        if password != confirm_password:
+            return Response({"message": "Passwords do not match"}, status.HTTP_400_BAD_REQUEST)
+        else:
+            user.set_password(password)
+            user.save()
+            return Response({"message": "Password reset successfully!"}, status.HTTP_201_CREATED)
