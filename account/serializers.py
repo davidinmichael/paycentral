@@ -44,6 +44,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
-# class LoginSerializer(serializers.Serializer):
-#     email = serializers.EmailField()
-#     password = serializers.CharField(style={"input_type": "password"})
+
+class IndustrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Industry
+        fields = ["name"]

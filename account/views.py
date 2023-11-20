@@ -10,6 +10,13 @@ from .utils import *
 
 
 # Create your views here.
+class AllIndustries(APIView):
+
+    def get(self, request):
+        industry = Industry.objects.all()
+        serializer = IndustrySerializer(industry, many=True)
+        return Response(serializer.data, status.HTTP_200_OK)
+
 class RegisterUsers(APIView):
     permission_classes = [AllowAny]
 
