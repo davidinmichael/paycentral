@@ -6,6 +6,16 @@ from .models import *
 from countries.models import Country
 
 
+class WaitListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WaitList
+        fields = "__all__"
+
+    def validate_email(self, value):
+        if WaitList.objects.filter(email=value).exists():
+            raise ValidationError("User with this email already exists")
+        return value
+
 class RegisterSerializer(serializers.ModelSerializer):
     industry = serializers.SlugRelatedField(
         slug_field="name", queryset=Industry.objects.all())

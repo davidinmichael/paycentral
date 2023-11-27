@@ -5,6 +5,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 
 urlpatterns = [
+    path("waitlist/", WaitingList.as_view()),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     path("industries/", AllIndustries.as_view()),

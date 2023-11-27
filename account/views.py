@@ -11,7 +11,35 @@ from .models import *
 from .utils import *
 
 
+
 # Create your views here.
+
+class WaitingList(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        waitlist = WaitList.objects.all()
+        if waitlist:
+            serializer = WaitListSerializer(waitlist, many=True)
+            return Response(serializer.data, status.HTTP_200_OK)
+        else:
+            return Response({"message": "No Users in the waitlist yet"}, status.HTTP_200_OK)
+        
+    def post(self, request):
+        data = {}
+        serializer = WaitListSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            data["message"] = "We have added you to our waiting list!"
+            data["message2"] = "We'll let you know when PayCentral is ready"
+            data["email"] = user.email
+            return Response(data, status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+            
+
+
 class AllIndustries(APIView):
 
     def get(self, request):
