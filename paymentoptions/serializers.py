@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import *
-from countries.serializers import *
 
 
 class PaymentOptionSerializer(serializers.ModelSerializer):
