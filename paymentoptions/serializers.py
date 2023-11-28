@@ -4,15 +4,15 @@ from countries.models import Country
 from .models import *
 
 
-class PaymentOptionSerializer(serializers.ModelSerializer):
+class PaymentMethodSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PaymentOption
+        model = PaymentMethod
         fields = ["name", "logo"]
 
 
 class PaymentGatewaySerializer(serializers.ModelSerializer):
     payment_options = serializers.SlugRelatedField(
-        slug_field="name", queryset=PaymentOption.objects.all(), many=True)
+        slug_field="name", queryset=PaymentMethod.objects.all(), many=True)
     countries = serializers.SlugRelatedField(
         slug_field="name", queryset=Country.objects.all(), many=True)
 
@@ -38,44 +38,43 @@ class UserRatingSerializer(serializers.ModelSerializer):
         return UserRating.objects.create(**validated_data)
 
 
-class PaymentOptionCountrySerializer(serializers.ModelSerializer):
-    supported_countries = serializers.StringRelatedField(
-        many=True, source="country")
+# class PaymentOptionCountrySerializer(serializers.ModelSerializer):
+#     supported_countries = serializers.StringRelatedField(
+#         many=True, source="country")
 
-    class Meta:
-        model = PaymentOption
-        fields = ['payment_option', 'supported_countries']
-
-
-class SingleCountrySerializer(serializers.ModelSerializer):
-    region = serializers.StringRelatedField()
-    payment_options = PaymentOptionSerializer(many=True)
-
-    class Meta:
-        model = Country
-        fields = ["name", "capital", "region", "payment_options"]
+#     class Meta:
+#         model = PaymentOption
+#         fields = ['payment_option', 'supported_countries']
 
 
-class AddPaymentOptionSerializer(serializers.ModelSerializer):
-    payment_option = serializers.CharField(max_length=255)
-    country = serializers.SlugRelatedField(queryset=Country.objects.all(),
-                                           slug_field="name", many=True)
+# class SingleCountrySerializer(serializers.ModelSerializer):region = serializers.StringRelatedField()
+#     payment_options = PaymentOptionSerializer(many=True)
 
-    class Meta:
-        model = PaymentOption
-        fields = ['payment_option', 'country']
+#     class Meta:
+#         model = Country
+#         fields = ["name", "capital", "region", "payment_options"]
 
-    def create(self, validated_data):
-        supported_country_names = validated_data.pop('country', [])
 
-        payment_option = PaymentOption.objects.create(
-            payment_option=validated_data['payment_option'])
+# class AddPaymentOptionSerializer(serializers.ModelSerializer):
+#     payment_option = serializers.CharField(max_length=255)
+#     country = serializers.SlugRelatedField(queryset=Country.objects.all(),
+#                                            slug_field="name", many=True)
 
-        for country_name in supported_country_names:
-            country = Country.objects.get(name=country_name)
-            payment_option.country.add(country)
+#     class Meta:
+#         model = PaymentOption
+#         fields = ['payment_option', 'country']
 
-        return payment_option
+#     def create(self, validated_data):
+#         supported_country_names = validated_data.pop('country', [])
+
+#         payment_option = PaymentOption.objects.create(
+#             payment_option=validated_data['payment_option'])
+
+#         for country_name in supported_country_names:
+#             country = Country.objects.get(name=country_name)
+#             payment_option.country.add(country)
+
+#         return payment_option
 
 
 # {

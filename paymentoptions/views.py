@@ -9,45 +9,81 @@ import lxml
 import requests
 
 
-class PaymentOptions(APIView, PageNumberPagination):
+class PaymentMethods(APIView, PageNumberPagination):
     def get(self, request):
-        payment_options = PaymentOption.objects.all()
+        payment_options = PaymentMethod.objects.all()
         response = self.paginate_queryset(payment_options, request, view=self)
-        serializer = PaymentOptionSerializer(response, many=True)
+        serializer = PaymentMethodSerializer(response, many=True)
         if payment_options:
             return self.get_paginated_response(serializer.data)
         else:
-            message = "No payment options available now, check back soon"
+            message = "No payment methods available now, check back soon"
             return Response({'message': message}, status=status.HTTP_404_NOT_FOUND)
 
-
-class AvailablePaymentOptionAndCountries(APIView):
-    def get(self, request):
-        payment_options = PaymentOption.objects.all().order_by("payment_option")
-        serializer = PaymentOptionCountrySerializer(payment_options, many=True)
-        return Response(serializer.data, status.HTTP_200_OK)
-
-
-class SinglePaymentAndCountries(APIView):
-    def get(self, request, pk):
-        try:
-            payment_option = PaymentOption.objects.get(id=pk)
-        except PaymentOption.DoesNotExist:
-            return Response({"message": "Oops, Requested Payment Option Does Not Exist"})
-        serializer = PaymentOptionCountrySerializer(payment_option)
-        return Response(serializer.data, status.HTTP_200_OK)
-    
-
-class AddPaymentOptions(APIView):
     def post(self, request):
-        print(request.data)  # Print the data received in the request
-        serializer = AddPaymentOptionSerializer(data=request.data)
+        data = {}
+        serializer = PaymentMethodSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        print(serializer.errors)  # Print any serializer errors
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            payment_method = serializer.save()
+            payment_serializer = PaymentMethodSerializer(payment_method)
+            data["message"] = 'Payment method added successfully!'
+            data["payment_method"] = payment_serializer.data
+            return Response(data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
+
+class PaymentGateways(APIView, PageNumberPagination):
+
+    def get(self, request):
+        payment_gateway = PaymentGateway.objects.all()
+        response = self.paginate_queryset(payment_gateway, request, view=self)
+        serializer = PaymentGatewaySerializer(response, many=True)
+        if payment_gateway:
+            return self.get_paginated_response(serializer.data)
+        else:
+            message = "No payment gateways available now, check back soon"
+            return Response({'message': message}, status=status.HTTP_404_NOT_FOUND)
+
+    def post(self, request):
+        data = {}
+        serializer = PaymentGatewaySerializer(data=request.data)
+        if serializer.is_valid():
+            payment_gateway = serializer.save()
+            payment_serializer = PaymentGatewaySerializer(payment_gateway)
+            data["message"] = 'Payment Gateway Created successfully!'
+            data["payment_gateway"] = payment_serializer.data
+            return Response(data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+
+# class AvailablePaymentOptionAndCountries(APIView):
+#     def get(self, request):
+#         payment_options = PaymentOption.objects.all().order_by("payment_option")
+#         serializer = PaymentOptionCountrySerializer(payment_options, many=True)
+#         return Response(serializer.data, status.HTTP_200_OK)
+
+
+# class SinglePaymentAndCountries(APIView):
+#     def get(self, request, pk):
+#         try:
+#             payment_option = PaymentOption.objects.get(id=pk)
+#         except PaymentOption.DoesNotExist:
+#             return Response({"message": "Oops, Requested Payment Option Does Not Exist"})
+#         serializer = PaymentOptionCountrySerializer(payment_option)
+#         return Response(serializer.data, status.HTTP_200_OK)
+
+
+# class AddPaymentOptions(APIView):
+#     def post(self, request):
+#         print(request.data)  # Print the data received in the request
+#         serializer = AddPaymentOptionSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         print(serializer.errors)  # Print any serializer errors
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Getting payment data
@@ -104,7 +140,7 @@ class AddPaymentOptions(APIView):
 #             for location in locations:
 #                 location = location.strip()
 #                 country_instance, created = Country.objects.get_or_create(name=location)
-                
+
 #                 # Handle duplicates if the name is set to unique
 #                 if not created:
 #                     # If the country already exists, associate it with the PaymentOption instance

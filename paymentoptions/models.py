@@ -3,9 +3,10 @@ from countries.models import *
 from account.models import AppUser
 
 
-class PaymentOption(models.Model):
+class PaymentMethod(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    logo = models.ImageField(upload_to="payment_option/")
+    logo = models.ImageField(upload_to="payment_option/",
+                             default="payment-option.png/")
 
     def __str__(self):
         return self.name
@@ -13,12 +14,13 @@ class PaymentOption(models.Model):
 
 class PaymentGateway(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    payment_options = models.ManyToManyField(PaymentOption)
+    payment_options = models.ManyToManyField(PaymentMethod)
     countries = models.ManyToManyField(Country)
     bio = models.TextField()
     about = models.TextField()
     target_audience = models.TextField()
-    logo = models.ImageField(upload_to="payment_gateway/")
+    logo = models.ImageField(upload_to="payment_gateway/",
+                             default="payment-gateway.png/")
     rate_sum = models.IntegerField(default=0, blank=True)
     total_ratings = models.IntegerField(default=0, blank=True)
     average_rating = models.IntegerField(default=0, blank=True)

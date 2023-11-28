@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
-from paymentoptions.models import PaymentOption
+from paymentoptions.models import PaymentMethod
 from django.db.models import Q
 from paymentoptions.serializers import *
 from .models import *
@@ -41,40 +41,40 @@ class SingleRegion(APIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-class CountriesAndPaymentMethods(APIView, PageNumberPagination):
-    def get(self, request):
-        countries = Country.objects.all().order_by("name")
-        response = self.paginate_queryset(countries, request, view=self)
-        serializer = SingleCountrySerializer(response, many=True)
-        return self.get_paginated_response(serializer.data)
+# class CountriesAndPaymentMethods(APIView, PageNumberPagination):
+#     def get(self, request):
+#         countries = Country.objects.all().order_by("name")
+#         response = self.paginate_queryset(countries, request, view=self)
+#         serializer = SingleCountrySerializer(response, many=True)
+#         return self.get_paginated_response(serializer.data)
 
 
-class SingleCountryAndPayment(APIView):
-    def get(self, request, pk):
-        data = {}
-        country = Country.objects.get(id=pk)
-        country_serializer = CountrySerializer(country)
-        payment_option = PaymentOption.objects.filter(country=country)
-        serializer = PaymentOptionSerializer(payment_option, many=True)
-        data["country"] = country_serializer.data
-        if payment_option:
-            data["supported_payment_options"] = serializer.data
-            return Response(data, status.HTTP_200_OK)
-        else:
-            data["supported_payment_options"] = "No supported payment method for this country yet"
-            return Response(data, status.HTTP_200_OK)
+# class SingleCountryAndPayment(APIView):
+#     def get(self, request, pk):
+#         data = {}
+#         country = Country.objects.get(id=pk)
+#         country_serializer = CountrySerializer(country)
+#         payment_option = PaymentOption.objects.filter(country=country)
+#         serializer = PaymentOptionSerializer(payment_option, many=True)
+#         data["country"] = country_serializer.data
+#         if payment_option:
+#             data["supported_payment_options"] = serializer.data
+#             return Response(data, status.HTTP_200_OK)
+#         else:
+#             data["supported_payment_options"] = "No supported payment method for this country yet"
+#             return Response(data, status.HTTP_200_OK)
 
 
-class SearchCountry(APIView, PageNumberPagination):
-    def get(self, request, name):
-        countries = Country.objects.filter(
-            Q(name__icontains=name) | Q(region__name__icontains=name) | Q(capital__icontains=name)
-    ).order_by('name')
-        if not countries:
-            return Response({"message": "Oops, country not found, check the spelling and try again."})
-        response = self.paginate_queryset(countries, request, view=self)
-        serializer = SingleCountrySerializer(response, many=True)
-        return self.get_paginated_response(serializer.data)
+# class SearchCountry(APIView, PageNumberPagination):
+#     def get(self, request, name):
+#         countries = Country.objects.filter(
+#             Q(name__icontains=name) | Q(region__name__icontains=name) | Q(capital__icontains=name)
+#     ).order_by('name')
+#         if not countries:
+#             return Response({"message": "Oops, country not found, check the spelling and try again."})
+#         response = self.paginate_queryset(countries, request, view=self)
+#         serializer = SingleCountrySerializer(response, many=True)
+#         return self.get_paginated_response(serializer.data)
 
     
 
