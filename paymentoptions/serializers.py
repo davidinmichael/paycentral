@@ -1,4 +1,4 @@
-from django.forms import ValidationError
+from rest_framework.exceptions import ValidationError
 from rest_framework import serializers
 from countries.models import Country
 from .models import *
@@ -23,6 +23,9 @@ class PaymentGatewaySerializer(serializers.ModelSerializer):
 
 
 class UserRatingSerializer(serializers.ModelSerializer):
+    payment_gateway = serializers.SlugRelatedField(
+        slug_field="name", queryset=PaymentGateway.objects.all())
+
     class Meta:
         model = UserRating
         fields = "__all__"

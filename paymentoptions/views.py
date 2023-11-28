@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
+from django.db.models import F
 from .models import *
 from .serializers import *
 from bs4 import BeautifulSoup
@@ -57,6 +58,53 @@ class PaymentGateways(APIView, PageNumberPagination):
         else:
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
+
+
+class PaymentGatewayRating(APIView):
+    def post(self, request):
+        serializer = UserRatingSerializer(data=request.data)
+        if serializer.is_valid():
+            rating = serializer.save(user=request.user)
+            gateway = rating.payment_gateway
+
+            # Fetch the PaymentGateway object
+            payment_gateway = PaymentGateway.objects.get(name=gateway)
+
+            # Increment the total ratings and add the new rating
+            PaymentGateway.objects.filter(name=gateway).update(
+                total_ratings=F('total_ratings') + 1,
+                rate_sum=F('rate_sum') + rating.rating
+            )
+
+            # Ensure total_ratings is not zero to avoid division by zero
+            if payment_gateway.total_ratings > 0:
+                # Calculate and update the average rating
+                PaymentGateway.objects.filter(name=gateway).update(
+                    average_rating=F('rate_sum') / F('total_ratings')
+                )
+
+            return Response({"message": "Thank you for rating"}, status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+
+# class PaymentGatewayRating(APIView):
+#     def post(self, request):
+#         serializer = UserRatingSerializer(data=request.data)
+#         if serializer.is_valid():
+#             rating = serializer.save(user=request.user)
+#             gateway = rating.payment_gateway
+
+#             rate = int(rating.rating)
+#             payment_gateway = PaymentGateway.objects.get(name=gateway)
+#             payment_gateway.rate_sum += rate
+#             payment_gateway.total_ratings += 1
+#             payment_gateway.average_rating = round(
+#                 payment_gateway.rate_sum / payment_gateway.total_ratings)
+#             payment_gateway.save()
+#             return Response({"message": "Thank you for rating"}, status.HTTP_200_OK)
+#         else:
+#             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 # class AvailablePaymentOptionAndCountries(APIView):
 #     def get(self, request):

@@ -30,7 +30,7 @@ class PaymentGateway(models.Model):
 
 
 class UserRating(models.Model):
-    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE, blank=True)
     payment_gateway = models.ForeignKey(
         PaymentGateway, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
