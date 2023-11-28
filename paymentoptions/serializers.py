@@ -1,23 +1,56 @@
+from django.forms import ValidationError
 from rest_framework import serializers
+from countries.models import Country
 from .models import *
 
 
 class PaymentOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentOption
-        fields = ["payment_option"]
+        fields = ["name", "logo"]
+
+
+class PaymentGatewaySerializer(serializers.ModelSerializer):
+    payment_options = serializers.SlugRelatedField(
+        slug_field="name", queryset=PaymentOption.objects.all(), many=True)
+    countries = serializers.SlugRelatedField(
+        slug_field="name", queryset=Country.objects.all(), many=True)
+
+    class Meta:
+        model = PaymentGateway
+        fields = ["name", "payment_options", "countries", "bio",
+                  "about", "target_audience", "logo", "average_rating"]
+
+
+class UserRatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserRating
+        fields = "__all__"
+
+    def create(self, validated_data):
+        user = validated_data["user"]
+        payment_gateway = validated_data["payment_gateway"]
+
+        if UserRating.objects.filter(user=user, payment_gateway=payment_gateway).exists():
+            raise ValidationError(
+                "Users can't rate the same payment gateway more than once.")
+
+        return UserRating.objects.create(**validated_data)
+
 
 class PaymentOptionCountrySerializer(serializers.ModelSerializer):
-    supported_countries = serializers.StringRelatedField(many=True, source="country")
+    supported_countries = serializers.StringRelatedField(
+        many=True, source="country")
+
     class Meta:
         model = PaymentOption
         fields = ['payment_option', 'supported_countries']
 
 
-
 class SingleCountrySerializer(serializers.ModelSerializer):
     region = serializers.StringRelatedField()
     payment_options = PaymentOptionSerializer(many=True)
+
     class Meta:
         model = Country
         fields = ["name", "capital", "region", "payment_options"]
@@ -26,7 +59,7 @@ class SingleCountrySerializer(serializers.ModelSerializer):
 class AddPaymentOptionSerializer(serializers.ModelSerializer):
     payment_option = serializers.CharField(max_length=255)
     country = serializers.SlugRelatedField(queryset=Country.objects.all(),
-                                       slug_field="name", many=True)
+                                           slug_field="name", many=True)
 
     class Meta:
         model = PaymentOption
@@ -35,7 +68,8 @@ class AddPaymentOptionSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         supported_country_names = validated_data.pop('country', [])
 
-        payment_option = PaymentOption.objects.create(payment_option=validated_data['payment_option'])
+        payment_option = PaymentOption.objects.create(
+            payment_option=validated_data['payment_option'])
 
         for country_name in supported_country_names:
             country = Country.objects.get(name=country_name)

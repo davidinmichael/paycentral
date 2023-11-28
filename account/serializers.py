@@ -1,4 +1,3 @@
-from tkinter.ttk import Style
 from rest_framework import serializers
 from django.core.exceptions import ValidationError
 import re

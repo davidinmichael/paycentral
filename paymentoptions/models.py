@@ -19,8 +19,9 @@ class PaymentGateway(models.Model):
     about = models.TextField()
     target_audience = models.TextField()
     logo = models.ImageField(upload_to="payment_gateway/")
-    total_ratings = models.IntegerField(default=0)
-    average_rating = models.FloatField(default=0.0)
+    rate_sum = models.IntegerField(default=0, blank=True)
+    total_ratings = models.IntegerField(default=0, blank=True)
+    average_rating = models.IntegerField(default=0, blank=True)
 
     def __str__(self):
         return f"{self.name} | {self.total_ratings}"
