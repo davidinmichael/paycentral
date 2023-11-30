@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import F
+from rest_framework.parsers import FormParser, MultiPartParser
 from .models import *
 from .serializers import *
 from bs4 import BeautifulSoup
@@ -11,6 +12,8 @@ import requests
 
 
 class PaymentMethods(APIView, PageNumberPagination):
+    parser_classes = [FormParser, MultiPartParser]
+
     def get(self, request):
         payment_options = PaymentMethod.objects.all()
         response = self.paginate_queryset(payment_options, request, view=self)
@@ -35,6 +38,7 @@ class PaymentMethods(APIView, PageNumberPagination):
 
 
 class PaymentGateways(APIView, PageNumberPagination):
+    parser_classes = [FormParser, MultiPartParser]
 
     def get(self, request):
         payment_gateway = PaymentGateway.objects.all()
