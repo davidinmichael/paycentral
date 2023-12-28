@@ -19,7 +19,7 @@ class PaymentGatewaySerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentGateway
         fields = ["name", "payment_options", "countries", "bio",
-                  "about", "target_audience", "logo", "average_rating"]
+                  "about", "accepted_methods", "target_audience", "logo", "average_rating"]
 
 class PaymentGatewayGetSerializer(serializers.ModelSerializer):
     payment_options = PaymentMethodSerializer(many=True)
@@ -29,7 +29,7 @@ class PaymentGatewayGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentGateway
         fields = ["name", "payment_options", "countries", "bio",
-                  "about", "target_audience", "logo", "average_rating"]
+                  "about", "accepted_methods", "target_audience", "logo", "average_rating"]
 
 
 class UserRatingSerializer(serializers.ModelSerializer):
