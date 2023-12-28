@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from countries.models import *
 from account.models import AppUser
@@ -18,7 +19,7 @@ class PaymentGateway(models.Model):
     countries = models.ManyToManyField(Country)
     bio = models.TextField()
     about = models.TextField()
-    accepted_methods = models.TextField(null=True, blank=True)
+    accepted_methods = models.TextField(null=True, blank=True, default="None")
     target_audience = models.TextField()
     logo = models.ImageField(upload_to="payment_gateway/",
                              default="payment-gateway.png/")
