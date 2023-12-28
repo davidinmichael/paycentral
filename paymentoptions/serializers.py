@@ -19,7 +19,17 @@ class PaymentGatewaySerializer(serializers.ModelSerializer):
     class Meta:
         model = PaymentGateway
         fields = ["name", "payment_options", "countries", "bio",
-                  "about", "target_audience", "logo", "average_rating"]
+                  "about", "accepted_methods", "target_audience", "logo", "average_rating"]
+
+class PaymentGatewayGetSerializer(serializers.ModelSerializer):
+    payment_options = PaymentMethodSerializer(many=True)
+    countries = serializers.SlugRelatedField(
+        slug_field="name", queryset=Country.objects.all(), many=True)
+
+    class Meta:
+        model = PaymentGateway
+        fields = ["name", "payment_options", "countries", "bio",
+                  "about", "accepted_methods", "target_audience", "logo", "average_rating"]
 
 
 class UserRatingSerializer(serializers.ModelSerializer):

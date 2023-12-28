@@ -43,7 +43,7 @@ class PaymentGateways(APIView, PageNumberPagination):
     def get(self, request):
         payment_gateway = PaymentGateway.objects.all()
         response = self.paginate_queryset(payment_gateway, request, view=self)
-        serializer = PaymentGatewaySerializer(response, many=True)
+        serializer = PaymentGatewayGetSerializer(response, many=True)
         if payment_gateway:
             return self.get_paginated_response(serializer.data)
         else:
