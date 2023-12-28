@@ -20,7 +20,7 @@ class PaymentGateway(models.Model):
     bio = models.TextField()
     about = models.TextField()
     accepted_methods = models.TextField(null=True, blank=True)
-    target_audience = models.TextField()
+    target_audience = models.TextField(null=True, blank=True)
     logo = models.ImageField(upload_to="payment_gateway/",
                              default="payment-gateway.png/")
     rate_sum = models.IntegerField(default=0, blank=True)
