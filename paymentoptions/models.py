@@ -18,7 +18,7 @@ class PaymentGateway(models.Model):
     countries = models.ManyToManyField(Country)
     bio = models.TextField()
     about = models.TextField()
-    accepted_methods = models.TextField()
+    accepted_methods = models.TextField(null=True, blank=True)
     target_audience = models.TextField()
     logo = models.ImageField(upload_to="payment_gateway/",
                              default="payment-gateway.png/")
