@@ -2,6 +2,9 @@
 
 from django.db import migrations, models
 
+def set_default_accepted_methods(apps, schema_editor):
+    PaymentGateway = apps.get_model('paymentoptions', 'PaymentGateway')
+    PaymentGateway.objects.filter(accepted_methods__isnull=True).update(accepted_methods='default_value')
 
 class Migration(migrations.Migration):
 
@@ -13,6 +16,25 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='paymentgateway',
             name='accepted_methods',
-            field=models.TextField(blank=True, null=True),
+            field=models.TextField(default='default_value'),
         ),
+        migrations.RunPython(set_default_accepted_methods),
     ]
+
+
+# from django.db import migrations, models
+
+
+# class Migration(migrations.Migration):
+
+#     dependencies = [
+#         ('paymentoptions', '0005_paymentgateway_accepted_methods'),
+#     ]
+
+#     operations = [
+#         migrations.AlterField(
+#             model_name='paymentgateway',
+#             name='accepted_methods',
+#             field=models.TextField(blank=True, null=True),
+#         ),
+#     ]
