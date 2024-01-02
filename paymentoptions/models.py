@@ -1,4 +1,3 @@
-from email.policy import default
 from django.db import models
 from countries.models import *
 from account.models import AppUser
