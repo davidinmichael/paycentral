@@ -28,7 +28,7 @@ class PaymentGatewayGetSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PaymentGateway
-        fields = ["name", "payment_options", "countries", "bio",
+        fields = ["id", "name", "payment_options", "countries", "bio",
                   "about", "accepted_methods", "target_audience", "logo", "average_rating"]
 
 

@@ -63,6 +63,15 @@ class PaymentGateways(APIView, PageNumberPagination):
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
+class PaymentGatewayDetail(APIView):
+    def get(self, request, pk):
+        try:
+            payment_gateway = PaymentGateway.objects.get(id=pk)
+        except:
+            return Response({"message": "Product not found"}, status.HTTP_404_NOT_FOUND)
+        serializer = PaymentGatewayGetSerializer(payment_gateway)
+        return Response(serializer.data, status.HTTP_200_OK)
+
 
 class PaymentGatewayRating(APIView):
     def post(self, request):
