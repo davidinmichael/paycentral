@@ -13,9 +13,21 @@ def send_welcome_email(sender, instance, created, **kwargs):
         "token": instance.token_otp,
     }
     template = render_to_string("account/welcome_email.html", context)
-    print(template)
     if created:
         try:
             send_email(instance.email, template)
+        except:
+            return "Couldn't connect, try again"
+
+@receiver(post_save, sender=WaitList)
+def waitlist_welcome_email(sender, instance, created, **kwargs):
+    context = {
+        "name": instance.full_name,
+        "email": instance.email,
+    }
+    template = render_to_string("account/waitlist_email.html", context)
+    if created:
+        try:
+            waitlist_email(instance.email, template)
         except:
             return "Couldn't connect, try again"

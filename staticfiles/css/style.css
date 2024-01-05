@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+    font-family: 'Spline Sans', sans-serif;
+}
+
+header {
+    height: 200px;
+    width: 100%;
+    background: url(Header.png);
+    margin-bottom: 48px;
+}
+
+header div {
+    display: flex;
+    text-align: center;
+    color: #fff;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.50);
+}
+
+header h2 {
+    font-weight: 600;
+    font-size: 32px;
+}
+
+header h4 {
+    font-weight: 500;
+    font-size: 20px;
+}
+
+.container {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.container div {
+    padding: 24px;
+}
+.container div h1 {
+    font-weight: 500;
+    font-size: 24px;
+    color: #151515;
+    line-height: 32px;
+    padding-bottom: 16px;
+}
+
+.container div p {
+    columns: #444444;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.what-coming > div:nth-child(1) {
+    background-color: #F6F4F4;
+}
+
+.what-coming div {
+    margin: 0 auto;
+}
+
+.what-coming div h3 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #151515;
+}
+
+.list {
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.list h3 {
+    margin-bottom: 16px;
+    font-weight: 500;
+    font-size: 18px;
+}
+
+.list li, .list p {
+    font-size: 16px;
+    color: #444444;
+    line-height: 24px;
+}
+
+footer {
+    height: 176px;
+    background-color: #F6F4F4;
+}
+
+footer div {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+
+}
+
+footer div a {
+    text-decoration: none;
+    font-family: 'Spline Sans', sans-serif;
+}
