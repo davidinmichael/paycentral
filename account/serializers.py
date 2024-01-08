@@ -12,7 +12,7 @@ class WaitListSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
         if WaitList.objects.filter(email=value).exists():
-            raise ValidationError("User with this email already exists")
+            raise ValidationError("User with this email already exist, please use another email")
         return value
 
 class RegisterSerializer(serializers.ModelSerializer):
