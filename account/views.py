@@ -178,7 +178,7 @@ class ForgotPassword(APIView):
         }
         template = render_to_string("account/forgot_email.html", context)
         try:
-            send_email(user.email, template)
+            forgot_password_email(user.email, template)
         except:
             return Response({"message": "Error sending mail"}, status.HTTP_400_BAD_REQUEST)
         return Response({"message": f"We have sent an email with a password reset information to {user.email}"}, status.HTTP_200_OK)
