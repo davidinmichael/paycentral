@@ -56,7 +56,7 @@ def waitlist_email(user_email, template):
 
     email = EmailMultiAlternatives(
         subject=subject,
-        body=f"Verify your email:",
+        body=f"You've joined the waitlist",
         from_email=from_email,
         to=to_email,
     )
