@@ -22,7 +22,7 @@ def send_email(user_email, template):
         print("Email sent to, ", user_email)
     except Exception as e:
         print(f"Failed to send email: {e}")
-        return f"Couldn't connect, try again"
+        return f"Couldn't connect, please, try again"
 
     return None
 
