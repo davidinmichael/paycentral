@@ -67,7 +67,7 @@ def waitlist_email(user_email, template):
         email.send(fail_silently=False)
         print("Email sent to, ", user_email)
     except Exception as e:
-        print(f"Failed to send email: {e}")
+        print(f"Failed to send email, error: {e}")
         return f"Couldn't connect, please try again"
 
     return None
