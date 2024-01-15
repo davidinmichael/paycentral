@@ -91,7 +91,7 @@ class ResendVerificationMail(APIView):
             print(template)
             try:
                 send_email(user.email, template)
-                return Response({"message": "Email Sent to your email"}, status.HTTP_200_OK)
+                return Response({"message": "Email Sent"}, status.HTTP_200_OK)
             except:
                 return Response({"message": "Try Again"}, status.HTTP_200_OK)
 
