@@ -100,6 +100,7 @@ class VerifyEmail(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, token):
+        # url = "https://github.com/davidinmichael/paycentral"
         url = "https://github.com/davidinmichael/paycentral"
         user = AppUser.objects.get(token_otp=token)
         if user.email_verified == False:
